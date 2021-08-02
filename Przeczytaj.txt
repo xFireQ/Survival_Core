@@ -1,0 +1,7 @@
+Wiecej informacji na naszym discordzie
+LINK: https://discord.gg/EhwdQmZYjE
+
+Konfiguracja dostepna po wgraniu pluginu (ściezka: /plugins_data/Survival_Core/Config.yml
+
+Plugin napisany przez fireq'a
+Jak masz jakis blad/propozycje zglos to na naszym dc lub napisz dc fireq#3002
