@@ -4,17 +4,42 @@ declare(strict_types=1);
 
 namespace Survival_Core\utils;
 
-use pocketmine\utils\Config;
+use Survival_Core\Main;
 
-class ConfigUtil {
+final class ConfigUtil {
 
-    private static $values = [];
+    private function __construct() {}
 
-    public static function init(Config $config) : void {
-        self::$values = $config->getAll();
+    public static function format(string $message) : string {
+        $config = Main::getInstance()->getPluginConfig();
+
+        $message = str_replace("%C", $config->getNested("messages.color"), $message);
+        $message = str_replace("%M", $config->getNested("messages.color-mark"), $message);
+
+        return ChatUtil::fixColors($message);
     }
 
-    public static function getValue(string $key) {
-        return self::$values[$key] ?? null;
+    /**
+     * @return array|string
+     */
+    public static function getMessage(string $key, bool $format = true) {
+        $config = Main::getInstance()->getPluginConfig();
+        $message = $config->getNested($key);
+
+        if(is_array($message)) {
+            $lines = [];
+
+            foreach($message as $line) {
+                $lines[] = self::format($line);
+            }
+
+            return $lines;
+        }
+
+        if($message === null) {
+            return "";
+        }
+
+        return $format ? self::format(str_replace("{MESSAGE}", $message, $config->getNested("messages.format"))) : self::format($message);
     }
 }
