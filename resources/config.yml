@@ -1,0 +1,27 @@
+messages:
+  color: "&7"
+  color-mark: "&c"
+  format: "&8(%MSurvivalCore&8) %C{MESSAGE}"
+
+basic:
+  command-missing-permission: "Nie posiadasz %Mpermisji%C, aby uzyc tej komendy &8(%M{PERMISSION}&8)"
+
+commands: # tu idą jakieś proste komendy typu /help, /vip /svip etc.
+  help:
+    - "&8============= [ &l%MPOMOC &r&8] ============="
+    - "&l%M/zglos &r&8- %Ckomenda do zgloszenia gracza"
+    - "&8============= [ &l%MPOMOC &r&8] ============="
+
+join:
+  first-time: "&8[&a+&8] %CGracz %M{NICK} %Cdolaczyl po raz pierwszy!"
+  message: "&8[&a+&8] %CGracz %M{NICK} %Cdolaczyl na serwer!"
+
+report:
+  usage: "Poprawne uzycie: %M/zglos &8(%Mwiadomosc&8)"
+  cooldown: "Nastepne zgloszenie mozesz wyslac za %M{COOLDOWN} %Csekund!"
+  success: "Pomyslnie wyslano zgloszenie!"
+  admin: "&8(&1HelpOP&8) %C{NICK}&8: &1{MESSAGE}"
+
+say:
+  usage: "Poprawne uzycie: %M/say &8(%Mwiadomosc&8)"
+  chat: "&8» &7{MESSAGE}"

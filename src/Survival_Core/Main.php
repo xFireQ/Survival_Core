@@ -1,47 +1,79 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Survival_Core;
 
-use pocketmine\Server;
-
 use pocketmine\plugin\PluginBase;
-
-use Survival_Core\utils\Utils;
-use Survival_Core\utils\ConfigUtil;
-use Survival_Core\listener\ListenerManager;
 use pocketmine\utils\Config;
-
-use Survival_Core\command\CommandManager;
+use Survival_Core\command\player\HelpCommand;
+use Survival_Core\command\player\ReportCommand;
+use Survival_Core\command\admin\SayCommand;
+use Survival_Core\listener\player\PlayerJoinListener;
 
 class Main extends PluginBase {
-    
-    public static $reportCooldown = [];
 
     private static $instance;
-    private $Config;
-    
-    public function getInstance() : Main {
+
+    private $pluginConfig;
+
+    public static function getInstance() : self {
         return self::$instance;
     }
-    
 
     public function onEnable() : void {
         self::$instance = $this;
 
-        $this->init();
+        $this->saveResource("config.yml");
+
+        $this->pluginConfig = new Config($this->getDataFolder() . "config.yml", Config::YAML);
+
+        $this->initCommands();
+        $this->initListeners();
+
+        $this->getLogger()->info("Plugin enabled!");
     }
 
-    
-    private function init() : void {
-        self::$instance = $this;
+    private function initCommands() : void {
+        $commandMap = $this->getServer()->getCommandMap();
 
-        $this->saveResource("Config.yml");
-        $this->Config = new Config($this->getDataFolder() . "Config.yml", Config::YAML);
-        
-        CommandManager::init();
-        ListenerManager::init($this);
-        ConfigUtil::init($this->Config);
+        $unregisterCommands = [
+            "say",
+            "help",
+            "?",
+            "gc"
+        ];
+
+        foreach($unregisterCommands as $commandName) {
+            $command = $commandMap->getCommand($commandName);
+
+            if($command === null) {
+                continue;
+            }
+
+            $commandMap->unregister($command);
+        }
+
+        $commands = [
+            new HelpCommand(),
+            new ReportCommand(),
+            new SayCommand()
+        ];
+
+        $commandMap->registerAll("CoreS", $commands);
     }
-    
-    
+
+    private function initListeners() : void {
+        $listeners = [
+            new PlayerJoinListener()
+        ];
+
+        foreach($listeners as $listener) {
+            $this->getServer()->getPluginManager()->registerEvents($listener, $this);
+        }
+    }
+
+    public function getPluginConfig() : Config {
+        return $this->pluginConfig;
+    }
 }

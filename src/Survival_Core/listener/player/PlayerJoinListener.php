@@ -1,28 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Survival_Core\listener\player;
 
-use pocketmine\Player;
-use pocketmine\event\player\PlayerJoinEvent;
-
 use pocketmine\event\Listener;
-use Survival_Core\utils\Utils;
-use Survival_Core\Main;
+use pocketmine\event\player\PlayerJoinEvent;
+use Survival_Core\utils\ConfigUtil;
 
 class PlayerJoinListener implements Listener {
 
-    public function messageOnJoin(PlayerJoinEvent $e) {
-
-        $player = $e->getPlayer();
+    public function messageOnJoin(PlayerJoinEvent $event) : void {
+        $player = $event->getPlayer();
         $nick = $player->getName();
-        $e->setJoinMessage(" ");
-        foreach($player->getServer()->getOnlinePlayers() as $p){ 
-             if ($player->hasPlayedBefore()) {
-                  $p->sendMessage(Utils::getFromConfig("message-join", false, $nick));
-             } else {
-                  $p->sendMessage(Utils::getFromConfig("message-join-first-time", false, $nick));
-             }
-        }
-        
+
+        $message = ConfigUtil::getMessage("join." . ($player->hasPlayedBefore() ? "message" : "first-time"));
+
+        $event->setJoinMessage(str_replace("{NICK}", $nick, $message));
     }
 }
